@@ -50,8 +50,10 @@ class Window(QMainWindow):
 
         ######
         self.setWindowTitle('DynaBlaster')
+        self.statusBar().showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
         self.setWindowIcon(QIcon('../res/images/icon.png'))
 
+        _thread.start_new_thread(self.pointsThread, (1,))
 
         self.show()
 
@@ -60,6 +62,12 @@ class Window(QMainWindow):
         self.muzika.media = QMediaContent(QUrl('../res/sound/GameMusic.mp3'))
         self.muzika.setMedia(QMediaContent(QUrl('../res/sound/GameMusic.mp3')))
         self.muzika.play()
+
+    def pointsThread(self,broj):
+        while True:
+            #if(player1Score != self.game.board.player_1.points)
+            self.statusBar().showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
+            time.sleep(2)
 
     def checkGame(self):
         self.game.levelUpSignal.connect(self.nextLevel)
@@ -91,8 +99,7 @@ class Window(QMainWindow):
 
     def gameOver(self):
         self.__init__()
-        self.mainMenuWidget.play_button.setText('GAME OVER')
-        self.mainMenuWidget.play_button.setEnabled(False)
+        self.mainMenuWidget.play_button.setText('Play again')
 
     def center(self):
 
