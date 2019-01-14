@@ -5,9 +5,7 @@ from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QStackedWidget, QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl
 import _thread
-
 from multiprocessing import Process
-import ctypes
 
 from src import game
 from src import constants as const
@@ -31,6 +29,8 @@ class Window(QMainWindow):
     player2Score = 0
     player1lives = 3
     player2lives = 3
+    player1alive = True
+    player2alive = True
 
     def __init__(self):
 
@@ -44,10 +44,11 @@ class Window(QMainWindow):
         self.menu()
         self.checkGame()
 
-        # muzika u pozadini preko procesa
-        self.procesMuzika = Process(target=self.Music(), args=())
+        #muzika u pozadini preko procesa
+        self.procesMuzika = Process(target=self.Music(),args=())
         self.procesMuzika.start()
 
+        ######
         self.setWindowTitle('DynaBlaster')
         self.setWindowIcon(QIcon('../res/images/icon.png'))
 
@@ -62,6 +63,7 @@ class Window(QMainWindow):
 
     def checkGame(self):
         self.game.levelUpSignal.connect(self.nextLevel)
+        self.game.gameOverSignal.connect(self.gameOver)
 
     def nextLevel(self):
         self.level += 1
@@ -83,10 +85,14 @@ class Window(QMainWindow):
         self.setCentralWidget(self.game)
         self.resize(const.BOARD_WIDTH * const.TILE_WIDTH, const.BOARD_HEIGHT * const.TILE_HEIGHT)
         self.center()
-        self.statusBar().showMessage(
-            'Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
+        self.statusBar().showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
 
         self.checkGame()
+
+    def gameOver(self):
+        self.__init__()
+        self.mainMenuWidget.play_button.setText('GAME OVER')
+        self.mainMenuWidget.play_button.setEnabled(False)
 
     def center(self):
 
@@ -106,6 +112,7 @@ class Window(QMainWindow):
         self.center()
 
     def play(self):
+
         self.setCentralWidget(self.game)
         self.resize(const.BOARD_WIDTH * const.TILE_WIDTH, const.BOARD_HEIGHT * const.TILE_HEIGHT + 20)
         self.center()
