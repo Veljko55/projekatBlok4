@@ -5,8 +5,11 @@ from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QStackedWidget, QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl
 import _thread
+
+from multiprocessing import Process
 import ctypes
 
+from src import game
 from src import constants as const
 
 import sys
@@ -36,6 +39,7 @@ class Window(QMainWindow):
         self.centralWidget = QStackedWidget()
         self.setCentralWidget(self.centralWidget)
         self.mainMenuWidget = MainMenu()
+        self.game = game.Game(1,self.level)
 
         self.menu()
 
@@ -73,7 +77,6 @@ class Window(QMainWindow):
         self.center()
 
     def play(self):
-
         self.setCentralWidget(self.game)
         self.resize(const.BOARD_WIDTH * const.TILE_WIDTH, const.BOARD_HEIGHT * const.TILE_HEIGHT + 20)
         self.center()
