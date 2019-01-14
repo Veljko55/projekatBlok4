@@ -1,13 +1,25 @@
 import time
+
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QStackedWidget, QWidget, QPushButton, QStatusBar
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import pyqtSignal, QThread
+from PyQt5.QtCore import pyqtSignal, QThread, QUrl
 import _thread
 import ctypes
 
 from src import constants as const
 
 import sys
+
+def Music():
+    print(111111)
+    muzika = QMediaPlayer()
+    muzika.media = QMediaContent(QUrl('../res/sound/GameMusic.mp3'))
+    muzika.setMedia(QMediaContent(QUrl('../res/sound/GameMusic.mp3')))
+    muzika.customAudioRole()
+    muzika.setVolume(1000)
+
+    muzika.play()
 
 class Window(QMainWindow):
 
@@ -27,13 +39,21 @@ class Window(QMainWindow):
 
         self.menu()
 
+        # muzika u pozadini preko procesa
+        self.procesMuzika = Process(target=self.Music(), args=())
+        self.procesMuzika.start()
+
         self.setWindowTitle('DynaBlaster')
         self.setWindowIcon(QIcon('../res/images/icon.png'))
 
 
         self.show()
 
-
+    def Music(self):
+        self.muzika = QMediaPlayer()
+        self.muzika.media = QMediaContent(QUrl('../res/sound/GameMusic.mp3'))
+        self.muzika.setMedia(QMediaContent(QUrl('../res/sound/GameMusic.mp3')))
+        self.muzika.play()
 
     def center(self):
 
