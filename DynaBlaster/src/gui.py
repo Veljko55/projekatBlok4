@@ -42,6 +42,7 @@ class Window(QMainWindow):
         self.game = game.Game(1,self.level)
 
         self.menu()
+        self.checkGame()
 
         # muzika u pozadini preko procesa
         self.procesMuzika = Process(target=self.Music(), args=())
@@ -58,6 +59,34 @@ class Window(QMainWindow):
         self.muzika.media = QMediaContent(QUrl('../res/sound/GameMusic.mp3'))
         self.muzika.setMedia(QMediaContent(QUrl('../res/sound/GameMusic.mp3')))
         self.muzika.play()
+
+    def checkGame(self):
+        self.game.levelUpSignal.connect(self.nextLevel)
+
+    def nextLevel(self):
+        self.level += 1
+        self.player1Score = self.game.board.player_1.points
+        self.player2Score = self.game.board.player_2.points
+        self.player1lives = self.game.board.player_1.numOfLives
+        self.player2lives = self.game.board.player_2.numOfLives
+        self.player1alive = self.game.board.player_1.isDead
+        self.player2alive = self.game.board.player_2.isDead
+
+        self.game = game.Game(1, self.level)
+        self.game.board.player_1.points = self.player1Score
+        self.game.board.player_2.points = self.player2Score
+        self.game.board.player_1.numOfLives = self.player1lives
+        self.game.board.player_2.numOfLives = self.player2lives
+        self.game.board.player_1.isDead = self.player1alive
+        self.game.board.player_2.isDead = self.player2alive
+
+        self.setCentralWidget(self.game)
+        self.resize(const.BOARD_WIDTH * const.TILE_WIDTH, const.BOARD_HEIGHT * const.TILE_HEIGHT)
+        self.center()
+        self.statusBar().showMessage(
+            'Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
+
+        self.checkGame()
 
     def center(self):
 
