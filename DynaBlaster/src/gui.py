@@ -1,7 +1,7 @@
 import time
 
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QStackedWidget, QWidget, QPushButton, QStatusBar
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QStackedWidget, QWidget, QPushButton, QStatusBar, QLabel
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSignal, QThread, QUrl
 import _thread
@@ -41,6 +41,13 @@ class Window(QMainWindow):
         self.mainMenuWidget = MainMenu()
         self.game = game.Game(1,self.level)
 
+        self.test = QStatusBar()
+        self.test.setWindowTitle('Score')
+        self.test.setFixedHeight(20)
+        self.test.setFixedWidth(300)
+        self.test.move(10, 10)
+        self.test.show()
+
         self.menu()
         self.checkGame()
 
@@ -50,7 +57,8 @@ class Window(QMainWindow):
 
         ######
         self.setWindowTitle('DynaBlaster')
-        self.statusBar().showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
+
+        self.test.showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__(), 2000)
         self.setWindowIcon(QIcon('../res/images/icon.png'))
 
         _thread.start_new_thread(self.pointsThread, (1,))
@@ -65,8 +73,7 @@ class Window(QMainWindow):
 
     def pointsThread(self,broj):
         while True:
-            #if(player1Score != self.game.board.player_1.points)
-            self.statusBar().showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
+            self.test.showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__(), 2000)
             time.sleep(2)
 
     def checkGame(self):
@@ -93,13 +100,14 @@ class Window(QMainWindow):
         self.setCentralWidget(self.game)
         self.resize(const.BOARD_WIDTH * const.TILE_WIDTH, const.BOARD_HEIGHT * const.TILE_HEIGHT)
         self.center()
-        self.statusBar().showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
+        self.test.showMessage('Level ' + self.level.__str__() + '\t\t\t\t\t' + ' Player1( ' + self.game.board.player_1.numOfLives.__str__() + ' ): ' + self.game.board.player_1.points.__str__() + '\t\t\t\t\t' + ' Player2( ' + self.game.board.player_2.numOfLives.__str__() + ' ): ' + self.game.board.player_2.points.__str__())
 
         self.checkGame()
 
     def gameOver(self):
         self.__init__()
-        self.mainMenuWidget.play_button.setText('Play again')
+        self.mainMenuWidget.play_button.setText('GAME OVER')
+        self.mainMenuWidget.play_button.setEnabled(False)
 
     def center(self):
 
